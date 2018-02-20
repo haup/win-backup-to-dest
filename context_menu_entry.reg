@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+; This will make it appear when you right click ON a folder
+; The "Icon" line can be removed if you don't want the icon to appear
+
+[HKEY_CLASSES_ROOT\Directory\shell\backup]
+@="Backup to ATL-Backup-NAS"
+
+[HKEY_CLASSES_ROOT\Directory\shell\backup\command]
+@="\"C:\\win-backup-to-dest\main.py" \"%1\""
