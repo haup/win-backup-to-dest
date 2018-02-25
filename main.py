@@ -37,7 +37,6 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
                 shutil.copytree(source, destination, symlinks, ignore)
             except shutil.Error as error:
                 print('Directory not copied. Error: %s', error)
-                # Any error saying that the directory doesn't exist
             except OSError as error:
                 print('Directory not copied. Error: %s', error)
         else:
@@ -49,7 +48,6 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
                 continue
             except shutil.Error as error:
                 print('Directory not copied. Error: ', error)
-                # Any error saying that the directory doesn't exist
             except OSError as error:
                 print('Directory not copied. Error: ', error)
 
@@ -57,14 +55,11 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
 def main(argv):
     """ Main function """
     path = argv[1]
-    destination = os.path.join("Z:\\", path.split("\\")[-1] + "-" + str(date.today()))
+    destination = os.path.join(LETTER + "\\", path.split("\\")[-1] + "-" + str(date.today()))
     if LETTER in str(subprocess.check_output(["net", "use"])):
         print("Network drive still mounted")
-        if subprocess.check_call(["net", "use", LETTER, "/delete", "/yes"],
-                                 stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT):
-            input("deleted")
-        else:
-            input("not deleted")
+        subprocess.check_call(["net", "use", LETTER, "/delete", "/yes"],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     subprocess.check_call(["net", "use", LETTER, SHARE],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     if os.path.isdir(destination) is not True:
