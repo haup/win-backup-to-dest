@@ -7,7 +7,7 @@ import os
 from datetime import date
 import logging
 
-SHARE = r"\\saiken\shared\backup\wtd"
+SHARE = r"\\192.168.1.65\backup"
 LETTER = "Z:"
 
 
