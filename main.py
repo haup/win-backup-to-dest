@@ -20,7 +20,7 @@ def _logpath(path, names):
 
 def check_if_folder_is_nuendo_project(dir):
     dir_list = os.listdir(dir) 
-    regex = re.compile('[a-zA-Z0-9-]*.npr')
+    regex = re.compile('[a-zA-Z0-9- ]*.npr')
     if any(regex.match(item) or (os.path.isdir(item) and item == "Audio") for item in dir_list):
         return True
     return False
