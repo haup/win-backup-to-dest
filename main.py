@@ -10,7 +10,7 @@ import re
 
 
 SHARE = r"\\192.168.1.56\backup"
-LETTER = "Z:"
+LETTER = "Q:"
 
 
 def _logpath(path, names):
