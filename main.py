@@ -9,7 +9,7 @@ import logging
 import re
 
 
-SHARE = r"\\Saiken\backup\wtd"
+SHARE = r"\\192.168.1.56\backup"
 LETTER = "Z:"
 
 
