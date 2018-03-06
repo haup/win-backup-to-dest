@@ -9,8 +9,8 @@ import logging
 import re
 
 
-SHARE = r"\\saiken\backup\wtd"
-LETTER = "Z:"
+SHARE = r"\\192.168.1.56\backup"
+LETTER = "Q:"
 
 
 def _logpath(path, names):
