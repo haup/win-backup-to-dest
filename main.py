@@ -9,8 +9,8 @@ import logging
 import re
 
 
-SHARE = r"\\192.168.1.56\backup"
-LETTER = "Q:"
+SHARE = r"\\Saiken\backup\wtd"
+LETTER = "Z:"
 
 
 def _logpath(path, names):
@@ -20,7 +20,7 @@ def _logpath(path, names):
 
 def check_if_folder_is_nuendo_project(dir):
     dir_list = os.listdir(dir) 
-    regex = re.compile('[a-zA-Z0-9]*.npr')
+    regex = re.compile('[a-zA-Z0-9-]*.npr')
     if any(regex.match(item) or (os.path.isdir(item) and item == "Audio") for item in dir_list):
         return True
     return False
@@ -73,14 +73,18 @@ def umount_share():
 
 
 def assemble_destination(path):
-    return os.path.join(LETTER + "\\", path.split("\\")[-1] + "\\" + 
+    folders = list(filter(None, path.split("\\")[1:]))
+    folders_path = ""
+    for item in folders:
+        folders_path = folders_path + item + "\\"
+    return os.path.join(LETTER + "\\" + folders_path + 
                         str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")))
 
 
 def copy_nuendo_files(path, destination):
     dir_list = os.listdir(path)
     print(dir_list)
-    regex = re.compile('[a-zA-Z0-9]*.npr')
+    regex = re.compile('[a-zA-Z0-9-]*.npr')
     npr_list = [regex.match(item) for item in dir_list]
     print(npr_list)
     os.makedirs(destination, exist_ok=True)
