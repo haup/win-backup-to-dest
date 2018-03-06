@@ -4,16 +4,26 @@ import sys
 import subprocess
 import shutil
 import os
-from datetime import date
+from datetime import datetime
 import logging
+import re
 
-SHARE = r"\\saiken\shared\backup\wtd"
-LETTER = "Z:"
+
+SHARE = r"\\192.168.1.56\backup"
+LETTER = "Q:"
 
 
 def _logpath(path, names):
     logging.info('Working in %s', path)
     return []   # nothing will be ignored
+
+
+def check_if_folder_is_nuendo_project(dir):
+    dir_list = os.listdir(dir) 
+    regex = re.compile('[a-zA-Z0-9]*.npr')
+    if any(regex.match(item) or (os.path.isdir(item) and item == "Audio") for item in dir_list):
+        return True
+    return False
 
 
 def copytree(src, dst, symlinks=False, ignore=_logpath):
@@ -52,22 +62,57 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
                 print('Directory not copied. Error: ', error)
 
 
-def main(argv):
-    """ Main function """
-    path = argv[1]
-    destination = os.path.join(LETTER + "\\", path.split("\\")[-1] + "-" + str(date.today()))
-    if LETTER in str(subprocess.check_output(["net", "use"])):
-        print("Network drive still mounted")
-        subprocess.check_call(["net", "use", LETTER, "/delete", "/yes"],
-                              stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+def mount_share():
     subprocess.check_call(["net", "use", LETTER, SHARE],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-    if os.path.isdir(destination) is not True:
-        copytree(path, destination)
-    else: 
-        print("folder is already there")
+
+
+def umount_share():
     subprocess.check_call(["net", "use", LETTER, "/delete", "/yes"],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+
+def assemble_destination(path):
+    return os.path.join(LETTER + "\\", path.split("\\")[-1] + "\\" + 
+                        str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")))
+
+
+def copy_nuendo_files(path, destination):
+    dir_list = os.listdir(path)
+    print(dir_list)
+    regex = re.compile('[a-zA-Z0-9]*.npr')
+    npr_list = [regex.match(item) for item in dir_list]
+    print(npr_list)
+    os.makedirs(destination, exist_ok=True)
+    for item in dir_list:
+        print(item)
+        if regex.match(item):
+            shutil.copy2(os.path.join(path + "\\" + item), destination + "\\")
+    os.makedirs(destination + "\\" + "Audio", exist_ok=True)
+    copytree(os.path.join(path + "\\" + "Audio"),
+             os.path.join(destination + "\\" + "Audio"))
+    if os.path.exists(os.path.join(path + "\\" + "Edits")):
+        os.makedirs(destination + "\\" + "Edits", exist_ok=True)
+        copytree(os.path.join(path + "\\" + "Edits"),
+                 os.path.join(destination + "\\" + "Edits"))
+
+
+def main(argv):
+    """ Main function """
+    path = ' '.join(argv[1:])
+    if not check_if_folder_is_nuendo_project(path):
+        input("This is not an Nuendo project, please use one of those")
+        return 0
+    destination = assemble_destination(path)
+    if LETTER in str(subprocess.check_output(["net", "use"])):
+        print("Network drive still mounted")
+        umount_share()
+    mount_share()
+    if not os.path.exists(destination):
+        copy_nuendo_files(path, destination)
+    else: 
+        print("folder is already there")
+    umount_share()
 
 
 if __name__ == "__main__":
