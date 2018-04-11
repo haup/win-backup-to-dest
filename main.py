@@ -9,8 +9,8 @@ import logging
 import re
 
 
-SHARE = r"\\Saiken\backup\wtd"
-LETTER = "Z:"
+SHARE = r"\\192.168.1.56\backup"
+LETTER = "Q:"
 
 
 def _logpath(path, names):
@@ -18,9 +18,17 @@ def _logpath(path, names):
     return []   # nothing will be ignored
 
 
+def check_file_smaller_than_50_mb(file):
+        size = os.path.getsize(file)
+        mb_size = round(size / 1024 / 1024, 3)
+        if mb_size < 50:
+            return True
+        return False
+
+
 def check_if_folder_is_nuendo_project(dir):
     dir_list = os.listdir(dir) 
-    regex = re.compile('[a-zA-Z0-9-]*.npr')
+    regex = re.compile('[a-zA-Z0-9- _.:?!()&`´^äöüß+#@=;,]*.npr')
     if any(regex.match(item) or (os.path.isdir(item) and item == "Audio") for item in dir_list):
         return True
     return False
@@ -52,7 +60,10 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
         else:
             print(source)
             try:
-                shutil.copy2(source, destination)
+                if check_file_smaller_than_50_mb(source):
+                    shutil.copy2(source, destination)
+                else:
+                    continue
             except shutil.SameFileError as sfe:
                 print("File alread there! Error: ", sfe)
                 continue
@@ -82,23 +93,23 @@ def assemble_destination(path):
 
 
 def copy_nuendo_files(path, destination):
+    audio_string = "\\Audio"
+    edits_string = "\\Edits"
     dir_list = os.listdir(path)
-    print(dir_list)
-    regex = re.compile('[a-zA-Z0-9-]*.npr')
+    regex = re.compile('[a-zA-Z0-9- _.:?!()&`´^äöüß+#@=;,]*.npr')
     npr_list = [regex.match(item) for item in dir_list]
-    print(npr_list)
     os.makedirs(destination, exist_ok=True)
     for item in dir_list:
         print(item)
         if regex.match(item):
             shutil.copy2(os.path.join(path + "\\" + item), destination + "\\")
-    os.makedirs(destination + "\\" + "Audio", exist_ok=True)
-    copytree(os.path.join(path + "\\" + "Audio"),
-             os.path.join(destination + "\\" + "Audio"))
-    if os.path.exists(os.path.join(path + "\\" + "Edits")):
-        os.makedirs(destination + "\\" + "Edits", exist_ok=True)
-        copytree(os.path.join(path + "\\" + "Edits"),
-                 os.path.join(destination + "\\" + "Edits"))
+    os.makedirs(destination + audio_string, exist_ok=True)
+    copytree(os.path.join(path + audio_string),
+             os.path.join(destination + audio_string))
+    if os.path.exists(os.path.join(path + edits_string)):
+        os.makedirs(destination + edits_string, exist_ok=True)
+        copytree(os.path.join(path + edits_string),
+                 os.path.join(destination + edits_string))
 
 
 def main(argv):
