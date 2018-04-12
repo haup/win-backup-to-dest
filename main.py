@@ -50,6 +50,7 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
             linkto = os.readlink(source)
             os.symlink(linkto, destination)
         elif os.path.isdir(source):
+            print(source)
             try:
                 shutil.copytree(source, destination, symlinks, ignore)
             except shutil.Error as error:
@@ -57,11 +58,12 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
             except OSError as error:
                 print('Directory not copied. Error: %s', error)
         else:
+            print(source)
             try:
-                # if check_file_smaller_than_50_mb(source):
-                shutil.copy2(source, destination)
-                # else:
-                #     continue
+                if check_file_smaller_than_50_mb(source):
+                    shutil.copy2(source, destination)
+                else:
+                    continue
             except shutil.SameFileError as sfe:
                 print("File alread there! Error: ", sfe)
                 continue
