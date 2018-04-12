@@ -58,10 +58,10 @@ def copytree(src, dst, symlinks=False, ignore=_logpath):
                 print('Directory not copied. Error: %s', error)
         else:
             try:
-                if check_file_smaller_than_50_mb(source):
-                    shutil.copy2(source, destination)
-                else:
-                    continue
+                # if check_file_smaller_than_50_mb(source):
+                shutil.copy2(source, destination)
+                # else:
+                #     continue
             except shutil.SameFileError as sfe:
                 print("File alread there! Error: ", sfe)
                 continue
