@@ -9,8 +9,8 @@ import logging
 import re
 
 
-SHARE = r"\\Saiken\backup\wtd"
-LETTER = "Z:"
+SHARE = r"\\192.168.1.56\backup"
+LETTER = "Q:"
 
 
 def _logpath(path, names):
@@ -28,7 +28,7 @@ def check_file_smaller_than_50_mb(file):
 
 def check_if_folder_is_nuendo_project(dir):
     dir_list = os.listdir(dir) 
-    regex = re.compile('[a-zA-Z0-9-]*.npr')
+    regex = re.compile('[a-zA-Z0-9- ]*.npr')
     if any(regex.match(item) or (os.path.isdir(item) and item == "Audio") for item in dir_list):
         return True
     return False
