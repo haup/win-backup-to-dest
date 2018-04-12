@@ -96,7 +96,7 @@ def copy_nuendo_files(path, destination):
     audio_string = "\\Audio"
     edits_string = "\\Edits"
     dir_list = os.listdir(path)
-    regex = re.compile('[a-zA-Z0-9-]*.npr')
+    regex = re.compile('[a-zA-Z0-9- _.:?!()&`´^äöüß+#@=;,]*.npr')
     npr_list = [regex.match(item) for item in dir_list]
     os.makedirs(destination, exist_ok=True)
     for item in dir_list:
