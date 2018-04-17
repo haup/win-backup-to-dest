@@ -24,6 +24,8 @@ def join_list_with_seperator(iterator, seperator):
 
 
 def load_config():
+    global LETTER
+    global SHARE
     try:
         with open('config.json') as json_data_file:
             data = json.load(json_data_file)
@@ -31,7 +33,7 @@ def load_config():
         SHARE = os.sep + join_list_with_seperator(SHARE.split("/"), os.sep)
     except OSError:
         print("Cannot load config file")
-        return 0
+        return
 
 
 def _logpath(path, names):
@@ -118,7 +120,7 @@ def copy_nuendo_files(path, destination):
     edits_string = "\\Edits"
     dir_list = os.listdir(path)
     regex = re.compile('[a-zA-Z0-9- _.:?!()&`´^äöüß+#@=;,]*.npr')
-    npr_list = [regex.match(item) for item in dir_list]
+    # npr_list = [regex.match(item) for item in dir_list]
     os.makedirs(destination, exist_ok=True)
     for item in dir_list:
         print(item)
