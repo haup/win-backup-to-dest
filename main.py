@@ -7,10 +7,31 @@ import os
 from datetime import datetime
 import logging
 import re
+import json
 
 
-SHARE = r"\\192.168.1.56\backup"
-LETTER = "Q:"
+SHARE = r""
+LETTER = ""
+
+
+def join_list_with_seperator(iterator, seperator):
+    it = map(str, iterator)
+    seperator = str(seperator)
+    string = next(it, '')
+    for s in it:
+        string += seperator + s
+    return string
+
+
+def load_config():
+    try:
+        with open('config.json') as json_data_file:
+            data = json.load(json_data_file)
+        SHARE, LETTER = data["server"].values()
+        SHARE = os.sep + join_list_with_seperator(SHARE.split("/"), os.sep)
+    except OSError:
+        print("Cannot load config file")
+        return 0
 
 
 def _logpath(path, names):
@@ -114,6 +135,7 @@ def copy_nuendo_files(path, destination):
 
 def main(argv):
     """ Main function """
+    load_config()
     path = ' '.join(argv[1:])
     if not check_if_folder_is_nuendo_project(path):
         input("This is not an Nuendo project, please use one of those")
