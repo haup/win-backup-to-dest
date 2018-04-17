@@ -24,8 +24,6 @@ def join_list_with_seperator(iterator, seperator):
 
 
 def load_config():
-    global LETTER
-    global SHARE
     try:
         with open('config.json') as json_data_file:
             data = json.load(json_data_file)
