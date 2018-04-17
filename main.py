@@ -107,25 +107,24 @@ def umount_share():
 
 
 def assemble_destination(path):
-    folders = list(filter(None, path.split("\\")[1:]))
+    folders = list(filter(None, path.split(os.sep)[1:]))
     folders_path = ""
     for item in folders:
-        folders_path = folders_path + item + "\\"
-    return os.path.join(LETTER + "\\" + folders_path + 
+        folders_path = folders_path + item + os.sep
+    return os.path.join(LETTER + os.sep + folders_path + 
                         str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")))
 
 
 def copy_nuendo_files(path, destination):
-    audio_string = "\\Audio"
-    edits_string = "\\Edits"
+    audio_string = os.sep + "Audio"
+    edits_string = os.sep + "Edits"
     dir_list = os.listdir(path)
-    regex = re.compile('[a-zA-Z0-9- _.:?!()&`´^äöüß+#@=;,]*.npr')
-    # npr_list = [regex.match(item) for item in dir_list]
+    regex = re.compile('.npr$|.bak$')
     os.makedirs(destination, exist_ok=True)
     for item in dir_list:
         print(item)
-        if regex.match(item):
-            shutil.copy2(os.path.join(path + "\\" + item), destination + "\\")
+        if regex.search(item):
+            shutil.copy2(os.path.join(path + os.sep + item), destination + os.sep)
     os.makedirs(destination + audio_string, exist_ok=True)
     copytree(os.path.join(path + audio_string),
              os.path.join(destination + audio_string))
