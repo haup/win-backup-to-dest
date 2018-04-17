@@ -9,10 +9,10 @@ __pycache__/
 # Visual Studio for Code
 
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
 
 # Distribution / packaging
 .Python
@@ -107,4 +107,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-.vscode/settings.json
