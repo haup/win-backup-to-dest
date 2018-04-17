@@ -24,6 +24,8 @@ def join_list_with_seperator(iterator, seperator):
 
 
 def load_config():
+    global LETTER
+    global SHARE
     try:
         with open('config.json') as json_data_file:
             data = json.load(json_data_file)
@@ -134,11 +136,11 @@ def copy_nuendo_files(path, destination):
 
 def main(argv):
     """ Main function """
-    load_config()
     path = ' '.join(argv[1:])
     if not check_if_folder_is_nuendo_project(path):
         input("This is not an Nuendo project, please use one of those")
         return 0
+    load_config()
     destination = assemble_destination(path)
     if LETTER in str(subprocess.check_output(["net", "use"])):
         print("Network drive still mounted")
