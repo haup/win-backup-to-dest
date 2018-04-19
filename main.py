@@ -10,7 +10,7 @@ import re
 import json
 
 
-SHARE = r""
+SHARE = ""
 LETTER = ""
 
 
@@ -30,7 +30,9 @@ def load_config():
         with open(os.getenv('SystemDrive') + os.sep + 'win-backup-to-dest' + os.sep + 'config.json') as json_data_file:
             data = json.load(json_data_file)
         SHARE, LETTER = data["server"].values()
-        SHARE = os.sep + join_list_with_seperator(SHARE.split("/"), os.sep)
+        print(SHARE)
+        SHARE = r"\\" + join_list_with_seperator(SHARE.split("/"), os.sep)
+        print(SHARE)
     except OSError:
         print("Cannot load config file")
         return
