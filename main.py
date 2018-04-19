@@ -33,6 +33,8 @@ def load_config():
         SHARE = os.sep + join_list_with_seperator(SHARE.split("/"), os.sep)
     except OSError:
         print("Cannot load config file")
+        print(os.path.realpath)
+        print(os.getcwd())
         print(os.path.exists('config.json'))
         return
 
