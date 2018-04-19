@@ -27,15 +27,12 @@ def load_config():
     global LETTER
     global SHARE
     try:
-        with open('config.json') as json_data_file:
+        with open(os.getenv('SystemDrive') + os.sep + 'win-backup-to-dest' + os.sep + 'config.json') as json_data_file:
             data = json.load(json_data_file)
         SHARE, LETTER = data["server"].values()
         SHARE = os.sep + join_list_with_seperator(SHARE.split("/"), os.sep)
     except OSError:
         print("Cannot load config file")
-        print(os.path.realpath)
-        print(os.getcwd())
-        print(os.path.exists('config.json'))
         return
 
 
